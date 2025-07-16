@@ -133,8 +133,13 @@
                                                     class="btn btn-sm btn-outline-primary">
                                                     Join URL
                                                 </a>
-                                                <span class="ms-2 text-muted">Code:
+
+                                                 <a href="{{ '/dashboard/' . $quiz['uniqueId'] }}"
+                                                    class="btn btn-sm btn-outline-secondary">
+                                                      <span class="ms-2 text-muted">Code:
                                                     <code>{{ $quiz['uniqueId'] }}</code></span>
+                                                </a>
+                                              
                                             </div>
                                         </li>
 
@@ -151,6 +156,7 @@
                                                         <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ 'http://127.0.0.1/join-game/' . $quiz['uniqueId'] }}&amp;size=400x400"
                                                             alt="qrcode" title="{{ $quiz['uniqueId'] }}" class="img-fluid" />
                                                     </div>
+                                                       <h5 class="modal-title" id="qrModalLabel">{{ $quiz['uniqueId']}}</h5>
                                                 </div>
                                             </div>
                                         </div>

@@ -125,6 +125,7 @@ class QuizController extends Controller
     //         ->with('quiz_data', $quiz);
     // }
 
+    
     public function showHomePage()
     {
         return view('index');
@@ -416,6 +417,62 @@ class QuizController extends Controller
             'allResults' => $allResults,
         ]);
     }
+
+     public function adminDashboard(Request $request, $uniqueId)
+    {
+        // Fetch quiz details
+        // $res = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'token'  => Session::get('api_token'),
+        // ])
+        //     ->withoutVerifying()
+        //     ->get(env('SYSTEM_DEFAULT_URL') . "/api/Games/{$uniqueId}");
+
+        // if (! $res->successful()) {
+        //     abort(404, 'Quiz not found.');
+        // }
+
+        // $quiz = $res->json();
+        // dd($quiz,Session::get('api_token'),$uniqueId,$res,$res->json());
+        // Get current results for initial load
+        $initialResults = $this->getQuizResults($uniqueId);
+
+        return view('user.result-view', compact( 'uniqueId', 'initialResults'));
+    }
+
+    /**
+     * API endpoint to get current quiz results
+     */
+    public function getQuizResults($uniqueId)
+    {
+        $res = Http::withHeaders([
+            'accept' => '*/*',
+            'token'  => Session::get('api_token'),
+        ])
+            ->withoutVerifying()
+            ->get(env('SYSTEM_DEFAULT_URL') . "/api/Games/result?id={$uniqueId}&all=true");
+
+        if ($res->successful()) {
+            return $res->json();
+        }
+
+        return [];
+    }
+
+    /**
+     * API endpoint for AJAX calls to get live results
+     */
+    public function getLiveResults(Request $request, $uniqueId)
+    {
+        $results = $this->getQuizResults($uniqueId);
+        
+        return response()->json([
+            'success' => true,
+            'results' => $results,
+            'timestamp' => now()->toIso8601String()
+        ]);
+    }
+
 
     public function submitAnswer(Request $request, $sessionId)
     {

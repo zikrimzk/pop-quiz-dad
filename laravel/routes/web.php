@@ -53,3 +53,15 @@ Route::get('/join-game-{id}', [QuizController::class, 'joinGame'])->name('join-G
     // Submit jawaban (stub; sesuaikan endpoint sebenarnya jika beda)
     Route::post('/game-session/{sessionId}', [QuizController::class, 'submitAnswer'])
          ->name('submit-answer');
+
+         Route::get('/dashboard/{uniqueId}', [QuizController::class, 'adminDashboard'])
+         ->name('admin.dashboard');
+
+    /**
+     * API endpoint for the JavaScript to fetch live results.
+     * This corresponds to the getLiveResults() method and is named
+     * as expected by the dashboard's script.
+     */
+    Route::get('/quiz/{uniqueId}/live-results', [QuizController::class, 'getLiveResults'])
+         ->name('admin.getLiveResults');
+
