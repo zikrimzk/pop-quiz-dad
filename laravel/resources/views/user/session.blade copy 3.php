@@ -202,6 +202,17 @@
             max-height: 300px;
             overflow-y: auto;
         }
+
+        .log-message {
+            padding: 8px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+        }
+
+        .log-message.new {
+            background-color: #d4edda; 
+            transition: background-color 2s ease; 
+        }
     </style>
 
     <script>
@@ -212,40 +223,50 @@
             const sessionId = '{{ $sessionId }}';
             const isQuizComplete = @json(array_key_exists('result', $question));
 
-            // If quiz is complete, clear localStorage for this sessionId and do not display messages
             if (isQuizComplete) {
                 localStorage.removeItem(`websocket_messages_${sessionId}`);
                 log.innerHTML = '';
                 return;
             }
 
-            // Get existing messages from localStorage
             let messages = JSON.parse(localStorage.getItem(`websocket_messages_${sessionId}`)) || [];
 
-            // Add new message if it doesn't already exist
             if (!messages.includes(message)) {
                 messages.push(message);
                 localStorage.setItem(`websocket_messages_${sessionId}`, JSON.stringify(messages));
             }
 
-            // Update the log display
-            log.innerHTML = messages.map(msg => `<div class="p-2">${msg}</div>`).join('');
+            log.innerHTML = messages.map((msg, index) => {
+                const participantName = msg.split(' ')[0]; 
+                const avatar = createAvatar(participantName);
+                const displayMessage = msg.replace(participantName, `${avatar} ${participantName}`);
+                return `<div class="log-message ${index === messages.length - 1 && !isQuizComplete ? 'new' : ''}">${displayMessage}</div>`;
+            }).join('');
+
+            if (!isQuizComplete) {
+                log.scrollTop = log.scrollHeight;
+            }
         }
 
         function loadStoredMessages() {
             const sessionId = '{{ $sessionId }}';
             const isQuizComplete = @json(array_key_exists('result', $question));
 
-            // If quiz is complete, clear localStorage and do not load messages
             if (isQuizComplete) {
                 localStorage.removeItem(`websocket_messages_${sessionId}`);
                 return;
             }
 
-            // Load and display stored messages
             const messages = JSON.parse(localStorage.getItem(`websocket_messages_${sessionId}`)) || [];
             const log = document.getElementById('log');
-            log.innerHTML = messages.map(msg => `<div class="p-2">${msg}</div>`).join('');
+            log.innerHTML = messages.map((msg, index) => {
+                const participantName = msg.split(' ')[0];
+                const avatar = createAvatar(participantName);
+                const displayMessage = msg.replace(participantName, `${avatar} ${participantName}`);
+                return `<div class="log-message ${index === messages.length - 1 && !isQuizComplete ? 'new' : ''}">${displayMessage}</div>`;
+            }).join('');
+
+            log.scrollTop = log.scrollHeight;
         }
 
         function createAvatar(participantName) {
@@ -258,7 +279,6 @@
 
             if (!sessionId) {
                 console.log("⚠️ Please enter both Game ID and Session ID before connecting.");
-                logMessage("⚠️ Please enter both Game ID and Session ID before connecting.");
                 return;
             }
 
@@ -285,11 +305,9 @@
                 // logMessage("⚠️ WebSocket error occurred");
             };
 
-            // Load stored messages immediately
             loadStoredMessages();
         }
 
-        // Handle form submission
         document.getElementById('answerForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -297,21 +315,19 @@
             let no = '{{ $questionNo }}';
 
             if (socket && socket.readyState === WebSocket.OPEN) {
-                const avatar = createAvatar(participantName);
                 let message = no === '0' || no === '10' 
-                    ? `${avatar} ${participantName} already finished the QUIZ!`
-                    : `${avatar} ${participantName} just answered question ${no}`;
+                    ? `${participantName} already finished the QUIZ!`
+                    : `${participantName} just answered question ${no}`;
 
                 socket.send(message);
-                logMessage(message); // Store and display the message
+                logMessage(message); 
             } else {
-                logMessage("⚠️ Cannot send message, WebSocket is not connected");
+                console.log("⚠️ Cannot send message, WebSocket is not connected");
             }
 
             this.submit();
         });
 
-        // Initialize WebSocket and load messages on page load
         window.onload = connectWebSocket;
     </script>
 

@@ -140,7 +140,7 @@
                             @else
                                 {{-- Active Question --}}
                                 <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-primary rounded-pill me.2">
+                                    <span class="badge bg-primary rounded-pill me-2">
                                         Question {{ $question['questionNo'] }}
                                     </span>
                                     <small class="text-muted">Select the correct answer</small>
@@ -210,13 +210,25 @@
         }
 
         .log-message.new {
-            background-color: #d4edda; 
             transition: background-color 2s ease; 
         }
     </style>
 
     <script>
         let socket;
+
+        const highlightColors = [
+            '#d4edda',
+            '#cce5ff',
+            '#f8d7da',
+            '#fff3cd',
+            '#e2d3f6',
+            '#d1ecf1',
+        ];
+
+        function getRandomColor() {
+            return highlightColors[Math.floor(Math.random() * highlightColors.length)];
+        }
 
         function logMessage(message) {
             const log = document.getElementById('log');
@@ -236,9 +248,15 @@
                 localStorage.setItem(`websocket_messages_${sessionId}`, JSON.stringify(messages));
             }
 
-            log.innerHTML = messages.map((msg, index) => 
-                `<div class="log-message ${index === messages.length - 1 && !isQuizComplete ? 'new' : ''}">${msg}</div>`
-            ).join('');
+            // Generate random color for the new message
+            const randomColor = getRandomColor();
+
+            log.innerHTML = messages.map((msg, index) => {
+                const participantName = msg.split(' ')[0];
+                const avatar = createAvatar(participantName);
+                const displayMessage = msg.replace(participantName, `${avatar} ${participantName}`);
+                return `<div class="log-message ${index === messages.length - 1 && !isQuizComplete ? 'new' : ''}" style="${index === messages.length - 1 && !isQuizComplete ? `background-color: ${randomColor};` : ''}">${displayMessage}</div>`;
+            }).join('');
 
             if (!isQuizComplete) {
                 log.scrollTop = log.scrollHeight;
@@ -254,10 +272,14 @@
                 return;
             }
 
-            // Load and display stored messages
             const messages = JSON.parse(localStorage.getItem(`websocket_messages_${sessionId}`)) || [];
             const log = document.getElementById('log');
-            log.innerHTML = messages.map(msg => `<div class="log-message">${msg}</div>`).join('');
+            log.innerHTML = messages.map((msg) => {
+                const participantName = msg.split(' ')[0];
+                const avatar = createAvatar(participantName);
+                const displayMessage = msg.replace(participantName, `${avatar} ${participantName}`);
+                return `<div class="log-message">${displayMessage}</div>`;
+            }).join('');
 
             log.scrollTop = log.scrollHeight;
         }
@@ -272,7 +294,6 @@
 
             if (!sessionId) {
                 console.log("⚠️ Please enter both Game ID and Session ID before connecting.");
-                logMessage("⚠️ Please enter both Game ID and Session ID before connecting.");
                 return;
             }
 
@@ -309,15 +330,14 @@
             let no = '{{ $questionNo }}';
 
             if (socket && socket.readyState === WebSocket.OPEN) {
-                const avatar = createAvatar(participantName);
                 let message = no === '0' || no === '10' 
-                    ? `${avatar} ${participantName} already finished the QUIZ!`
-                    : `${avatar} ${participantName} just answered question ${no}`;
+                    ? `${participantName} already finished the QUIZ!`
+                    : `${participantName} just answered question ${no}`;
 
                 socket.send(message);
                 logMessage(message); 
             } else {
-                logMessage("⚠️ Cannot send message, WebSocket is not connected");
+                console.log("⚠️ Cannot send message, WebSocket is not connected");
             }
 
             this.submit();
