@@ -140,7 +140,7 @@
                             @else
                                 {{-- Active Question --}}
                                 <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-primary rounded-pill me.2">
+                                    <span class="badge bg-primary rounded-pill me-2">
                                         Question {{ $question['questionNo'] }}
                                     </span>
                                     <small class="text-muted">Select the correct answer</small>
@@ -202,17 +202,6 @@
             max-height: 300px;
             overflow-y: auto;
         }
-
-        .log-message {
-            padding: 8px;
-            margin-bottom: 4px;
-            border-radius: 4px;
-        }
-
-        .log-message.new {
-            background-color: #d4edda; 
-            transition: background-color 2s ease; 
-        }
     </style>
 
     <script>
@@ -223,32 +212,31 @@
             const sessionId = '{{ $sessionId }}';
             const isQuizComplete = @json(array_key_exists('result', $question));
 
+            // If quiz is complete, clear localStorage for this sessionId and do not display messages
             if (isQuizComplete) {
                 localStorage.removeItem(`websocket_messages_${sessionId}`);
                 log.innerHTML = '';
                 return;
             }
 
+            // Get existing messages from localStorage
             let messages = JSON.parse(localStorage.getItem(`websocket_messages_${sessionId}`)) || [];
 
+            // Add new message if it doesn't already exist
             if (!messages.includes(message)) {
                 messages.push(message);
                 localStorage.setItem(`websocket_messages_${sessionId}`, JSON.stringify(messages));
             }
 
-            log.innerHTML = messages.map((msg, index) => 
-                `<div class="log-message ${index === messages.length - 1 && !isQuizComplete ? 'new' : ''}">${msg}</div>`
-            ).join('');
-
-            if (!isQuizComplete) {
-                log.scrollTop = log.scrollHeight;
-            }
+            // Update the log display
+            log.innerHTML = messages.map(msg => `<div class="p-2">${msg}</div>`).join('');
         }
 
         function loadStoredMessages() {
             const sessionId = '{{ $sessionId }}';
             const isQuizComplete = @json(array_key_exists('result', $question));
 
+            // If quiz is complete, clear localStorage and do not load messages
             if (isQuizComplete) {
                 localStorage.removeItem(`websocket_messages_${sessionId}`);
                 return;
@@ -257,9 +245,7 @@
             // Load and display stored messages
             const messages = JSON.parse(localStorage.getItem(`websocket_messages_${sessionId}`)) || [];
             const log = document.getElementById('log');
-            log.innerHTML = messages.map(msg => `<div class="log-message">${msg}</div>`).join('');
-
-            log.scrollTop = log.scrollHeight;
+            log.innerHTML = messages.map(msg => `<div class="p-2">${msg}</div>`).join('');
         }
 
         function createAvatar(participantName) {
@@ -299,9 +285,11 @@
                 // logMessage("⚠️ WebSocket error occurred");
             };
 
+            // Load stored messages immediately
             loadStoredMessages();
         }
 
+        // Handle form submission
         document.getElementById('answerForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -315,7 +303,7 @@
                     : `${avatar} ${participantName} just answered question ${no}`;
 
                 socket.send(message);
-                logMessage(message); 
+                logMessage(message); // Store and display the message
             } else {
                 logMessage("⚠️ Cannot send message, WebSocket is not connected");
             }
@@ -323,6 +311,7 @@
             this.submit();
         });
 
+        // Initialize WebSocket and load messages on page load
         window.onload = connectWebSocket;
     </script>
 
