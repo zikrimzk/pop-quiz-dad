@@ -39,10 +39,35 @@ app.Map("/ws", async context =>
     {
         
         var sessionId = context.Request.Query["sessionId"].ToString();
-        
+        var uniqueId = context.Request.Query["uniqueId"].ToString();
+
+
         var socket = await context.WebSockets.AcceptWebSocketAsync();
 
+       
         MyDbContext ent = new MyDbContext();
+
+        if (!string.IsNullOrWhiteSpace(uniqueId))
+        {
+            try
+            {
+                var game = ent.Games.FirstOrDefault(x => x.UniqueId == uniqueId);
+
+                if (!SocketService.GameSockets.ContainsKey(game.UniqueId))
+                    SocketService.GameSockets[game.UniqueId] = new List<WebSocket>();
+
+                SocketService.GameSockets[game.UniqueId].Add(socket);
+                await GameSocketController.ProcessWebSocket(socket, game.UniqueId, SocketService.GameSockets);
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+
         try
         {
              var participant = ent.Participants.Include(x=>x.Game).FirstOrDefault(x => x.SessionId == sessionId);

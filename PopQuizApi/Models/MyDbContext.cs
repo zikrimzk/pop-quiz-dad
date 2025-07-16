@@ -29,16 +29,13 @@ public partial class MyDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
-        {
-            var configuration = new ConfigurationBuilder()
+        var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var connectionString = configuration.GetConnectionString("MyDbConnection");
-            optionsBuilder.UseSqlServer(connectionString);
-        }
+        var connectionString = configuration.GetConnectionString("MyDbConnection");
+        optionsBuilder.UseSqlServer(connectionString);
 
     }
   

@@ -138,7 +138,7 @@ namespace PopQuizApi.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id , user.Email, user.CreatedAt, user.Username});
+            return CreatedAtAction("GetUser", new { user.Email, user.CreatedAt, user.Username});
         }
 
         // DELETE: api/Users/5

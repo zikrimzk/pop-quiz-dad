@@ -1,5 +1,7 @@
 ﻿using com.google.zxing.common;
 using Newtonsoft.Json.Linq;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using SkiaSharp;
 using System.Drawing;
 using System.Drawing.Printing;
@@ -12,7 +14,7 @@ namespace PopQuizApi.Services
 {
     public class QrService
     {
-        public Bitmap GenerateQRCode(string data)
+        public Image<Rgba32> GenerateQRCode(string data)
         {
             var qrCodeWriter = new ZXing.BarcodeWriterPixelData
             {
@@ -27,23 +29,26 @@ namespace PopQuizApi.Services
 
             var pixelData = qrCodeWriter.Write(data);
 
-            // Create the bitmap (do NOT dispose it)
-            var bitmap = new System.Drawing.Bitmap(
-                pixelData.Width, pixelData.Height,
-                System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            var image = new Image<Rgba32>(pixelData.Width, pixelData.Height);
 
-            var rect = new Rectangle(0, 0, pixelData.Width, pixelData.Height);
-            var bmpData = bitmap.LockBits(rect,
-                System.Drawing.Imaging.ImageLockMode.WriteOnly,
-                bitmap.PixelFormat);
+            // Copy raw pixels into ImageSharp
+            image.ProcessPixelRows(accessor =>
+            {
+                for (int y = 0; y < pixelData.Height; y++)
+                {
+                    var row = accessor.GetRowSpan(y);
+                    for (int x = 0; x < pixelData.Width; x++)
+                    {
+                        int i = (y * pixelData.Width + x) * 4;
+                        byte r = pixelData.Pixels[i + 2]; // BGR → RGB
+                        byte g = pixelData.Pixels[i + 1];
+                        byte b = pixelData.Pixels[i];
+                        row[x] = new Rgba32(r, g, b);
+                    }
+                }
+            });
 
-            System.Runtime.InteropServices.Marshal.Copy(
-                pixelData.Pixels, 0, bmpData.Scan0, pixelData.Pixels.Length);
-
-            bitmap.UnlockBits(bmpData);
-
-            // Return the bitmap—don't wrap it in 'using'
-            return bitmap;
+            return image;
 
         }
     }
