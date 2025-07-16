@@ -262,8 +262,8 @@ class QuizController extends Controller
 
         // 7) Generate QR code linking to join URL
         $joinUrl = "{$dto['domainUrl']}";
-        $png     = QrCode::format('png')->size(200)->generate($joinUrl);
-        $qr      = base64_encode($png);
+        // $png     = QrCode::format('png')->size(200)->generate($joinUrl);
+        // $qr      = base64_encode($png);
 
         // 8) Flash quiz + qr to session and redirect to show
 
