@@ -11,17 +11,42 @@ Supported functionalities:
 - ✅ Real-time quizzes for classrooms, training sessions, or group learning
 
 ### 🔗 Commercial Value / Third-Party Integration
-POP QUIZ uses the [GoQR.me API](https://goqr.me/api/) to generate QR codes for each quiz. This allows participants to easily scan and join games, enhancing accessibility and user convenience.
+POP QUIZ uses the [GoQR.me API](https://goqr.me/api/) and [Zxing](https://www.nuget.org/packages/ZXing.Net/) to generate QR codes for each quiz. This allows participants to easily scan and join games, enhancing accessibility and user convenience.
+
+Pop Quiz application targets Kementerian Pendidikan Tinggi (KPT) institutions and universities, revolutionizing interactive learning and assessment. While sharing the engaging spirit of platforms like Kahoot!, our key differentiator lies in its ability to facilitate asynchronous participation with real-time progress updates, offering unparalleled flexibility and richer insights into learning outcomes.
 
 ---
 
 ## 🧱 System Architecture
 
 ### 🧩 High-Level Diagram
-*To be added*
+![Alt text]([https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/system_architecture.png?raw=true])
 
 ---
 
+## 🗃️ Database Design
+
+### 🧾 ERD (Entity-Relationship Diagram)
+![Alt text]([https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/erd.png?raw=true])
+
+### 💡 Schema Justification
+
+- `users`: Stores information about hosts or administrators who create and manage quizzes.
+- `participants`: Represents users who join and participate in quizzes.
+- `games`: Contains metadata for each quiz session, such as title, schedule, and description.
+- `game_tasks`: Holds the individual quiz questions associated with each game.
+- `game_progress`: Tracks participants’ real-time responses during a quiz.
+- `game_result`: Stores the final score or outcome for each participant after completing a quiz.
+
+**Key Relationships:**
+- One-to-many: A single `user` can create multiple `games`.
+- One-to-many: Each `game` can contain multiple `game_tasks` (questions).
+- One-to-many: A `participant` can have multiple `game_progress` entries as they answer each question.
+- One-to-many: A `participant` can have multiple `game_result` records for different games they joined.
+
+
+
+---
 ## 🖥️ Backend Application
 
 ### ⚙️ Technology Stack
@@ -29,9 +54,9 @@ POP QUIZ uses the [GoQR.me API](https://goqr.me/api/) to generate QR codes for e
 - **Framework:** ASP.NET Core
 - **Database:** Microsoft SQL Server (MSSQL)
 - **Other:**  
-  - Docker (for deployment)  
+  - Docker (for deployment and development)  
   - WebSockets (for real-time synchronization)  
-  - GoQR.me API (QR code generation)
+  - GoQR.me API and zxing (QR code generation)
 
 ### 📘 API Documentation
 Production Swagger Docs: [http://156.67.218.162:5000/swagger/index.html](http://156.67.218.162:5000/swagger/index.html)
@@ -197,35 +222,7 @@ Production Swagger Docs: [http://156.67.218.162:5000/swagger/index.html](http://
 
 ---
 
-## 🗃️ Database Design
-
-### 🧾 ERD (Entity-Relationship Diagram)
-![Alt text](https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/erd.png?raw=true)
-
-### 💡 Schema Justification
-
-- `users`: Stores information about hosts or administrators who create and manage quizzes.
-- `participants`: Represents users who join and participate in quizzes.
-- `games`: Contains metadata for each quiz session, such as title, schedule, and description.
-- `game_tasks`: Holds the individual quiz questions associated with each game.
-- `game_progress`: Tracks participants’ real-time responses during a quiz.
-- `game_result`: Stores the final score or outcome for each participant after completing a quiz.
-
-**Key Relationships:**
-- One-to-many: A single `user` can create multiple `games`.
-- One-to-many: Each `game` can contain multiple `game_tasks` (questions).
-- One-to-many: A `participant` can have multiple `game_progress` entries as they answer each question.
-- One-to-many: A `participant` can have multiple `game_result` records for different games they joined.
-
-
-
----
-
 ## 🧠 Business Logic & Validation
-
-### 🔄 Use Case Diagrams
-*To be added*
-
 ### ✅ Validation Rules
 
 #### Registration
