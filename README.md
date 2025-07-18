@@ -181,7 +181,7 @@ Production Swagger Docs: [http://156.67.218.162:5000/swagger/index.html](http://
   - 📤 Share via QR/game code
   - 📊 View results
 
-🔗 Repo: [Laravel Frontend](https://github.com/zikrimzk/pop-quiz-dad)
+🔗 Repo: [Laravel Frontend](https://github.com/zikrimzk/pop-quiz-dad/tree/main/laravel)
 
 ---
 
@@ -193,14 +193,14 @@ Production Swagger Docs: [http://156.67.218.162:5000/swagger/index.html](http://
   - 🔢 Join with game code
   - 📊 View results
 
-📦 APK: `app-release.apk` (included in ZIP package)
+🔗 Repo: [Flutter Resources](https://github.com/zikrimzk/pop-quiz-dad/tree/main/flutter_mobile)
 
 ---
 
 ## 🗃️ Database Design
 
 ### 🧾 ERD (Entity-Relationship Diagram)
-*To be added*
+![Alt text](https://github.com/zikrimzk/pop-quiz-dad/tree/images/erd.png?raw=true)
 
 ### 💡 Schema Justification
 - `users` → hosts/admins  
