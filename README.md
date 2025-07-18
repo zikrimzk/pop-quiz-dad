@@ -203,16 +203,21 @@ Production Swagger Docs: [http://156.67.218.162:5000/swagger/index.html](http://
 ![Alt text](https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/erd.png?raw=true)
 
 ### 💡 Schema Justification
-- `users` → hosts/admins  
-- `participants` → quiz joiners  
-- `games` → quiz metadata  
-- `game_tasks` → quiz questions  
-- `answers` → submitted responses
 
-**Key relationships:**
-- One-to-many: users → games  
-- One-to-many: games → tasks  
-- One-to-many: participants → answers
+- `users`: Stores information about hosts or administrators who create and manage quizzes.
+- `participants`: Represents users who join and participate in quizzes.
+- `games`: Contains metadata for each quiz session, such as title, schedule, and description.
+- `game_tasks`: Holds the individual quiz questions associated with each game.
+- `game_progress`: Tracks participants’ real-time responses during a quiz.
+- `game_result`: Stores the final score or outcome for each participant after completing a quiz.
+
+**Key Relationships:**
+- One-to-many: A single `user` can create multiple `games`.
+- One-to-many: Each `game` can contain multiple `game_tasks` (questions).
+- One-to-many: A `participant` can have multiple `game_progress` entries as they answer each question.
+- One-to-many: A `participant` can have multiple `game_result` records for different games they joined.
+
+
 
 ---
 
