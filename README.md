@@ -23,30 +23,6 @@ Pop Quiz application targets Kementerian Pendidikan Tinggi (KPT) institutions an
 ![Alt text](https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/system_architecture.png?raw=true)
 
 ---
-
-## 🗃️ Database Design
-
-### 🧾 ERD (Entity-Relationship Diagram)
-![Alt text](https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/erd.png?raw=true)
-
-### 💡 Schema Justification
-
-- `users`: Stores information about hosts or administrators who create and manage quizzes.
-- `participants`: Represents users who join and participate in quizzes.
-- `games`: Contains metadata for each quiz session, such as title, schedule, and description.
-- `game_tasks`: Holds the individual quiz questions associated with each game.
-- `game_progress`: Tracks participants’ real-time responses during a quiz.
-- `game_result`: Stores the final score or outcome for each participant after completing a quiz.
-
-**Key Relationships:**
-- One-to-many: A single `user` can create multiple `games`.
-- One-to-many: Each `game` can contain multiple `game_tasks` (questions).
-- One-to-many: A `participant` can have multiple `game_progress` entries as they answer each question.
-- One-to-many: A `participant` can have multiple `game_result` records for different games they joined.
-
-
-
----
 ## 🖥️ Backend Application
 
 ### ⚙️ Technology Stack
@@ -189,9 +165,9 @@ Production Swagger Docs: [http://156.67.218.162:5000/swagger/index.html](http://
 ---
 
 ### 🔒 Security
-- Token-based authentication
+- Token-based authentication (with token expiration time)
 - Session validation via headers
-- Role-based access (admin / user / participant)
+- Role-based access ( user(host) / participant)
 
 ---
 
@@ -221,6 +197,26 @@ Production Swagger Docs: [http://156.67.218.162:5000/swagger/index.html](http://
 🔗 Repo: [Flutter Resources](https://github.com/zikrimzk/pop-quiz-dad/tree/main/flutter_mobile)
 
 ---
+## 🗃️ Database Design
+
+### 🧾 ERD (Entity-Relationship Diagram)
+![Alt text](https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/erd.png?raw=true)
+
+### 💡 Schema Justification
+
+- `users`: Stores information about hosts or administrators who create and manage quizzes.
+- `participants`: Represents users who join and participate in quizzes.
+- `games`: Contains metadata for each quiz session, such as title, schedule, and description.
+- `game_tasks`: Holds the individual quiz questions associated with each game.
+- `game_progress`: Tracks participants’ real-time responses during a quiz.
+- `game_result`: Stores the final score or outcome for each participant after completing a quiz.
+
+**Key Relationships:**
+- One-to-many: A single `user` can create multiple `games`.
+- One-to-many: Each `game` can contain multiple `game_tasks` (questions).
+- One-to-many: A `participant` can have multiple `game_progress` entries as they answer each question.
+- One-to-many: A `participant` can have multiple `game_result` records for different games they joined.
+
 
 ## 🧠 Business Logic & Validation
 ### ✅ Validation Rules
