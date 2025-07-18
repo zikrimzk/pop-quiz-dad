@@ -200,7 +200,7 @@ Production Swagger Docs: [http://156.67.218.162:5000/swagger/index.html](http://
 ## 🗃️ Database Design
 
 ### 🧾 ERD (Entity-Relationship Diagram)
-![Alt text](https://github.com/zikrimzk/pop-quiz-dad/tree/images/erd.png?raw=true)
+![Alt text](https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/erd.png?raw=true)
 
 ### 💡 Schema Justification
 - `users` → hosts/admins  
