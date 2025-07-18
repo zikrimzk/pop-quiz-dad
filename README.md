@@ -20,14 +20,14 @@ Pop Quiz application targets Kementerian Pendidikan Tinggi (KPT) institutions an
 ## 🧱 System Architecture
 
 ### 🧩 High-Level Diagram
-![Alt text]([https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/system_architecture.png?raw=true])
+![Alt text](https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/system_architecture.png?raw=true)
 
 ---
 
 ## 🗃️ Database Design
 
 ### 🧾 ERD (Entity-Relationship Diagram)
-![Alt text]([https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/erd.png?raw=true])
+![Alt text](https://github.com/zikrimzk/pop-quiz-dad/blob/main/images/erd.png?raw=true)
 
 ### 💡 Schema Justification
 
